@@ -18,7 +18,10 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.Vector;
+
+import static Client.Filter.translate;
 
 public class GUIFilter extends JFrame{
     JLabel lName;
@@ -67,7 +70,7 @@ public class GUIFilter extends JFrame{
     private void addComponents(final Container pane){
         Font font1 = new Font("SansSerif", Font.BOLD, 25);
 
-        bFilter = new JButton("Set filter");
+        bFilter = new JButton(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("setfilterbutton"))));
         bFilter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
@@ -93,19 +96,19 @@ public class GUIFilter extends JFrame{
         value1 = new JLabel("200");
         value2 = new JLabel("300");
 
-        lName = new JLabel("Name:");
+        lName = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("namelabel"))));
         lName.setHorizontalAlignment(lName.CENTER);
         lName.setFont(font1);
 
-        lYearOfBirth = new JLabel("Year of birth:");
+        lYearOfBirth = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("yearlabel"))));
         lYearOfBirth.setHorizontalAlignment(lYearOfBirth.CENTER);
         lYearOfBirth.setFont(font1);
 
-        lState = new JLabel("State:");
+        lState = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("statelabel"))));
         lState.setHorizontalAlignment(lState.CENTER);
         lState.setFont(font1);
 
-        lCoordinates = new JLabel("  Coordinates:");
+        lCoordinates = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("coordinateslabel"))));
         lCoordinates.setHorizontalAlignment(lCoordinates.LEFT);
         lCoordinates.setFont(font1);
 
@@ -117,15 +120,15 @@ public class GUIFilter extends JFrame{
         lCoordinateY.setHorizontalAlignment(lCoordinateY.CENTER);
         lCoordinateY.setFont(font1);
 
-        lInjuredFacePart = new JLabel("Injured face part:");
+        lInjuredFacePart = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("injuredfacepartlabel"))));
         lInjuredFacePart.setHorizontalAlignment(lInjuredFacePart.CENTER);
         lInjuredFacePart.setFont(font1);
 
-        lInjuredBodyPart = new JLabel("Injured body part:");
+        lInjuredBodyPart = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("injuredbodypartlabel"))));
         lInjuredBodyPart.setHorizontalAlignment(lInjuredBodyPart.CENTER);
         lInjuredBodyPart.setFont(font1);
 
-        lColour = new JLabel("Colour:");
+        lColour = new JLabel(translate((ResourceBundle.getBundle("resources", Client.currentLocale).getString("colourlabel"))));
         lColour.setHorizontalAlignment(lColour.CENTER);
         lColour.setFont(font1);
 

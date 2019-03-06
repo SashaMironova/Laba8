@@ -12,13 +12,16 @@ import com.google.gson.reflect.TypeToken;
 
 import javax.swing.*;
 
+import static javax.swing.JComponent.getDefaultLocale;
+
 public class Client{
-    static Display display = new Display();
-    static Filter filter = new Filter();
+
     static String str;
     static String address = "127.0.0.1";
     static int serverPort = 1235;
-    Locale currentLocale;
+    static Locale currentLocale = getDefaultLocale();
+    static Display display = new Display();
+    static Filter filter = new Filter();
 
     public static ArrayList<InjuredPoliceman> injuredPolicemen;
 
@@ -77,6 +80,7 @@ public class Client{
         display.revalidate();
         display.repaint();
         System.out.println("reload");
+        filter = new Filter();
         filter.revalidate();
         filter.repaint();
     }
