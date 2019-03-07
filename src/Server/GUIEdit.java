@@ -7,6 +7,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -360,9 +362,11 @@ public class GUIEdit extends JFrame{
                     break;
             }
             injuredPoliceman.colour = getSelectedButtonText(buttonGroupColour);
+            injuredPoliceman.id = Server.injuredPolicemen.get(number).id;
             Server.injuredPolicemen.set(number, injuredPoliceman);
-            Server.json = Server.gson.toJson(Server.injuredPolicemen);
-            Server.inputOutput.output(Server.json);
+            updatePoliceman(injuredPoliceman);
+            //Server.json = Server.gson.toJson(Server.injuredPolicemen);
+            //Server.inputOutput.output(Server.json);
             DefaultTreeModel model = (DefaultTreeModel) Server.guiServer.tree.getModel();
             model.removeNodeFromParent(selectedNode1);
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) Server.guiServer.tree.getModel()
@@ -398,5 +402,29 @@ public class GUIEdit extends JFrame{
         frame.setSize(800,800);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+    }
+
+    private void updatePoliceman(InjuredPoliceman injuredPoliceman) {
+        try {
+            //Class.forName("org.postgresql.Driver");
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String login = "postgres";
+            String password = "postgres";
+            Connection con = DriverManager.getConnection(url, login, password);
+            String date= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss+02").format(Timestamp.valueOf(injuredPoliceman.created.toLocalDateTime()));
+            String query = "UPDATE INJURED_POLICEMAN SET NAME ='" + injuredPoliceman.name + "', YEAR_OF_BIRTH = " + injuredPoliceman.yearOfBirth + ", STATE = '" + injuredPoliceman.stateEnum + "', COLOUR = '" + injuredPoliceman.colour + "', X = " + injuredPoliceman.x + ", Y = " + injuredPoliceman.y + ", INJURED_FACE_PART = '" + injuredPoliceman.injuredFacePart + "', INJURED_BODY_PART = '" + injuredPoliceman.bodyPartsEnum.get(0) + "' WHERE ID=" + injuredPoliceman.id + ";";
+            //String date2= new SimpleDateFormat("YYYY-MM-DD hh:mm:ss.000000").format(date1).toString();
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+
+                rs.close();
+                stmt.close();
+            } finally {
+                con.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

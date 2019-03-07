@@ -20,6 +20,10 @@ import javax.swing.tree.TreeNode;
 import java.awt.event.ActionEvent;
 import java.lang.*;
 import java.awt.*;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -107,11 +111,14 @@ public class GUIServer extends JFrame {
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         if(selectedNode!=null){
+            int id =0;
             InjuredPoliceman object = (InjuredPoliceman)selectedNode.getUserObject();
             for (int i=0; i< Server.injuredPolicemen.size();i++){
-                if(object.id == Server.injuredPolicemen.get(i).id)
-                    Server.injuredPolicemen.remove(i);
+                if(object.id == Server.injuredPolicemen.get(i).id){
+                    id = object.id;
+                    Server.injuredPolicemen.remove(i);}
             }
+            deletePoliceman(id);
             model.removeNodeFromParent(selectedNode);
             Server.json = Server.gson.toJson(Server.injuredPolicemen);
             Server.inputOutput.output(Server.json);
@@ -128,32 +135,34 @@ public class GUIServer extends JFrame {
             DefaultMutableTreeNode root = (DefaultMutableTreeNode)selectedNode.getRoot();
             int number=0;
             InjuredPoliceman object = (InjuredPoliceman)selectedNode.getUserObject();
+            int id = 0;
             for (int i=0; i< Server.injuredPolicemen.size();i++){
-                if(object.id == Server.injuredPolicemen.get(i).id)
-                    number = i;
+                if(object.id == Server.injuredPolicemen.get(i).id){
+                    id = object.id;
+                    number = i;}
             }
-            int id=0;
+            deleteLowerPoliceman(id);
             ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
             Enumeration e = root.breadthFirstEnumeration();
             while(e.hasMoreElements()){
                 DefaultMutableTreeNode nodeForCollection = (DefaultMutableTreeNode)e.nextElement();
                 nodes.add(nodeForCollection);
             }
-            for (int i=0; i<=number;i++) {
-                id = Server.injuredPolicemen.get(0).id;
-                Server.injuredPolicemen.remove(0);
+            for (int i=0; i<Server.injuredPolicemen.size();i++) {
+//                id = Server.injuredPolicemen.get(0).id;
+//                Server.injuredPolicemen.remove(0);
                 for(int j =0;j<nodes.size();j++){
                     if(!nodes.get(j).isRoot()) {
                         InjuredPoliceman object1 = (InjuredPoliceman) nodes.get(j).getUserObject();
-                        if (object1.id == id) {
+                        if (object1.id < id) {
                             model.removeNodeFromParent(nodes.get(j));
                         }
                     }
                 }
             }
 
-            Server.json = Server.gson.toJson(Server.injuredPolicemen);
-            Server.inputOutput.output(Server.json);
+            //Server.json = Server.gson.toJson(Server.injuredPolicemen);
+            //Server.inputOutput.output(Server.json);
         }else{
             lMessage.setText("<html><center>You should select policeman<br>to delete policemen with lower index</html>");
         }
@@ -177,6 +186,7 @@ public class GUIServer extends JFrame {
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getModel().getRoot();
         root.removeAllChildren();
+        deleteAll();
         model.reload();
         Server.injuredPolicemen = new Vector<InjuredPoliceman>();
         Server.json = Server.gson.toJson(Server.injuredPolicemen);
@@ -190,5 +200,78 @@ public class GUIServer extends JFrame {
         frame.pack();
         frame.setVisible(true);
         frame.setSize(400,600);
+    }
+
+    private void deletePoliceman(int id) {
+        try {
+            //Class.forName("org.postgresql.Driver");
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String login = "postgres";
+            String password = "postgres";
+            Connection con = DriverManager.getConnection(url, login, password);
+            //String date= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss+02").format(Timestamp.valueOf(injuredPoliceman.created.toLocalDateTime()));
+            String query = "DELETE FROM INJURED_POLICEMAN WHERE ID = " + id + ";";
+            //String date2= new SimpleDateFormat("YYYY-MM-DD hh:mm:ss.000000").format(date1).toString();
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+
+                rs.close();
+                stmt.close();
+            } finally {
+                con.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteLowerPoliceman(int id) {
+        try {
+            //Class.forName("org.postgresql.Driver");
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String login = "postgres";
+            String password = "postgres";
+            Connection con = DriverManager.getConnection(url, login, password);
+            //String date= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss+02").format(Timestamp.valueOf(injuredPoliceman.created.toLocalDateTime()));
+            String query = "DELETE FROM INJURED_POLICEMAN WHERE ID < " + id + ";";
+            //String date2= new SimpleDateFormat("YYYY-MM-DD hh:mm:ss.000000").format(date1).toString();
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+
+                rs.close();
+                stmt.close();
+            } finally {
+                con.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteAll() {
+        try {
+            //Class.forName("org.postgresql.Driver");
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String login = "postgres";
+            String password = "postgres";
+            Connection con = DriverManager.getConnection(url, login, password);
+            //String date= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss+02").format(Timestamp.valueOf(injuredPoliceman.created.toLocalDateTime()));
+            String query = "DELETE FROM INJURED_POLICEMAN;";
+            //String date2= new SimpleDateFormat("YYYY-MM-DD hh:mm:ss.000000").format(date1).toString();
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet rs;
+                        stmt.executeQuery(query);
+
+                //123rs.close();
+                stmt.close();
+            } finally {
+                con.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

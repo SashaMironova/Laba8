@@ -10,14 +10,14 @@ public class InjuredPoliceman extends Policeman {
     public String name;
     public int yearOfBirth;
     public String location;
-    Date date = new Date();
-    public String dateOfCreation = date.toString();
+    //Date date = new Date();
+    //public String dateOfCreation = date.toString();
     public String colour;
     public double x = 0;
     public double y = 0;
     public float size = 75;
     OffsetDateTime created = ZonedDateTime.now().toOffsetDateTime();
-    OffsetDateTime delited = ZonedDateTime.now().toOffsetDateTime();
+    //OffsetDateTime deleted = ZonedDateTime.now().toOffsetDateTime();
 
     public InjuredPoliceman() {
         this.id = this.hashCode();
